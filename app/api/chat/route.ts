@@ -20,7 +20,11 @@ export async function POST(req: Request) {
       embeddingTypes: ['float'],
     });
     
-    const queryEmbedding = embedResponse.embeddings.float[0];
+   // Prove to TypeScript that the float array exists
+  if (!embedResponse.embeddings || !embedResponse.embeddings.float) {
+    throw new Error("Cohere failed to return the requested float embeddings.");
+  }
+  const queryEmbedding = embedResponse.embeddings.float[0];
 
     const { data: chunks, error } = await supabase.rpc('match_blog_chunks', {
       query_embedding: queryEmbedding,
