@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     // 3. VECTOR SEARCH (Ensuring vector(1024) matches Supabase schema)
     const { data: documents, error: matchError } = await supabase.rpc('match_documents', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.5,
+      match_threshold: 0.3,
       match_count: 5,
     }) as { data: DocumentChunk[] | null, error: any };
 
@@ -73,18 +73,23 @@ export async function POST(req: Request) {
       .map((doc) => `[SOURCE: ${doc.metadata.source} (${doc.metadata.date})]\n${doc.content}`)
       .join('\n\n---\n\n');
 
-    // 6. SYSTEM PROMPT (Stateless pattern for Llama 3.3)
+    // 6. SYSTEM PROMPT
     const systemPrompt = `
-      You are TruthLens AI, a defensive pedagogical tool for the Philippines.
-      
-      GUARDRAILS:
-      - Use ONLY the context provided below.
-      - If the answer isn't in the context, admit you don't know. Do NOT hallucinate.
-      - Cite your source at the end (e.g., Source: VERA Files 2024).
-      - Maintain a neutral, educational, and journalistic tone.
+    You are TruthLens AI, a defensive pedagogical tool designed to combat Philippine misinformation.
 
-      CONTEXT:
-      ${contextText}
+    YOUR IDENTITY & KNOWLEDGE:
+    - You were built as an academic prototype to educate users on identifying deepfakes and disinformation.
+    - Your knowledge base relies strictly on verified fact-checks from VERA Files, Rappler, and academic papers (like Ong & Cabañes or Citron & Chesney).
+    - If asked "What is VERA Files?" or "What is Rappler?", explain that they are independent, verified Philippine news and fact-checking organizations.
+    - If a user asks a broad question like "What do you know?" or "What can you do?", explain your purpose and suggest they ask about deepfakes, troll farms, or specific verified cases (like the Ramon Ang audio deepfake).
+
+    STRICT GUARDRAILS:
+    - For specific claims, news events, or definitions, use ONLY the context provided below.
+    - If the specific answer isn't in the context, explicitly state: "I'm sorry, but my current knowledge base does not contain verified information to answer that specific query." Do NOT hallucinate or guess.
+    - Cite your source at the end (e.g., Source: VERA Files 2024).
+
+    RETRIEVED CONTEXT:
+    ${contextText}
     `;
 
     // 7. GROQ INFERENCE (Temperature 0.1 for maximum groundedness)
