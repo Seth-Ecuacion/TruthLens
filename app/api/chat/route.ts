@@ -1,83 +1,110 @@
-import { CohereClientV2 } from 'cohere-ai';
-import Groq from 'groq-sdk';
 import { createClient } from '@supabase/supabase-js';
+import { CohereClient } from 'cohere-ai';
+import Groq from 'groq-sdk';
+import { NextResponse } from 'next/server';
 
-const cohere = new CohereClientV2({ token: process.env.COHERE_API_KEY! });
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+// Define Types for strictness
+type DocumentChunk = {
+  id: number;
+  content: string;
+  metadata: { 
+    source: string; 
+    date: string; 
+    title: string 
+  };
+  similarity: number;
+};
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // Acknowledged: Admin key for prototype only
 );
+
+const cohere = new CohereClient({
+  token: process.env.COHERE_API_KEY!,
+});
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY!,
+});
 
 export async function POST(req: Request) {
   try {
-    const { message } = await req.json();
+    const { messages } = await req.json();
 
-    const embedResponse = await cohere.embed({
-      texts: [message],
-      model: 'embed-english-v3.0',
-      inputType: 'search_query',
-      embeddingTypes: ['float'],
-    });
-    
-   // Prove to TypeScript that the float array exists
-  if (!embedResponse.embeddings || !embedResponse.embeddings.float) {
-    throw new Error("Cohere failed to return the requested float embeddings.");
-  }
-  const queryEmbedding = embedResponse.embeddings.float[0];
+    // 1. INPUT VALIDATION GUARD
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'Invalid request payload' }, { status: 400 });
+    }
 
-    const { data: chunks, error } = await supabase.rpc('match_blog_chunks', {
+    const lastMessage = messages[messages.length - 1].content;
+
+    // 2. EMBED QUERY (inputType: 'search_query' is correct for Cohere v3)
+// 1. Convert the query to an embedding
+  const embed = await cohere.embed({
+    texts: [lastMessage],
+    model: 'embed-english-v3.0',
+    inputType: 'search_query', 
+  });
+
+  // FIX: Cast 'embed.embeddings' so TypeScript knows it's a list of number arrays
+  const embeddings = embed.embeddings as number[][];
+  const queryEmbedding = embeddings[0];
+
+    // 3. VECTOR SEARCH (Ensuring vector(1024) matches Supabase schema)
+    const { data: documents, error: matchError } = await supabase.rpc('match_documents', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.3, 
-      match_count: 3,       
-    });
+      match_threshold: 0.5,
+      match_count: 5,
+    }) as { data: DocumentChunk[] | null, error: any };
 
-    if (error) throw error;
+    if (matchError) throw matchError;
 
-    const contextText = chunks?.map((chunk: any) => chunk.content).join('\n\n') || '';
+    // 4. ZERO-MATCH EARLY RETURN (Ensures Transparency)
+    if (!documents || documents.length === 0) {
+      return NextResponse.json({ 
+        role: 'assistant', 
+        content: "I'm sorry, but my current knowledge base does not contain verified information to answer that specific query. For the most accurate and up-to-date fact-checks, I recommend consulting VERA Files or Rappler directly." 
+      });
+    }
 
-    const systemPrompt = `You are a helpful assistant for a media literacy and cybersecurity blog. 
-    Answer the user's question based ONLY on the following context:
-    
-    ${contextText}
-    
-    If the answer is not in the context, honestly state that you don't know based on the provided resources.`;
+    // 5. FORMAT CONTEXT WITH METADATA
+    const contextText = documents
+      .map((doc) => `[SOURCE: ${doc.metadata.source} (${doc.metadata.date})]\n${doc.content}`)
+      .join('\n\n---\n\n');
 
+    // 6. SYSTEM PROMPT (Stateless pattern for Llama 3.3)
+    const systemPrompt = `
+      You are TruthLens AI, a defensive pedagogical tool for the Philippines.
+      
+      GUARDRAILS:
+      - Use ONLY the context provided below.
+      - If the answer isn't in the context, admit you don't know. Do NOT hallucinate.
+      - Cite your source at the end (e.g., Source: VERA Files 2024).
+      - Maintain a neutral, educational, and journalistic tone.
+
+      CONTEXT:
+      ${contextText}
+    `;
+
+    // 7. GROQ INFERENCE (Temperature 0.1 for maximum groundedness)
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: message }
+        { role: 'user', content: lastMessage } // Stateless RAG pattern
       ],
-      model: 'llama-3.1-8b-instant',
-      stream: true, 
+      model: 'llama-3.3-70b-versatile',
+      temperature: 0.1, 
+      max_tokens: 800,
     });
 
-    const stream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of chatCompletion) {
-          const content = chunk.choices[0]?.delta?.content || '';
-          if (content) {
-            controller.enqueue(new TextEncoder().encode(content));
-          }
-        }
-        controller.close();
-      }
+    return NextResponse.json({ 
+      role: 'assistant', 
+      content: chatCompletion.choices[0].message.content 
     });
 
-    // FIX: Using appropriate content type for raw byte streaming
-    return new Response(stream, {
-      headers: { 
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
-
-  } catch (error) {
-    console.error("RAG Error:", error);
-    return new Response(JSON.stringify({ error: "Something went wrong" }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  } catch (error: any) {
+    console.error('CRITICAL CHAT ERROR:', error.message);
+    return NextResponse.json({ error: 'System error. Check terminal logs.' }, { status: 500 });
   }
 }

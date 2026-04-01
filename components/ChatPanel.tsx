@@ -1,121 +1,129 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
-import { useChat } from '@/hooks/useChat';
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'; // Added Dispatch/SetStateAction
+import { Bot, Send, X, MessageSquare, Loader2 } from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-type ChatPanelProps = {
+// Helper for Tailwind class merging
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// 1. DEFINE THE INTERFACE (This fixes the IntrinsicAttributes error)
+interface ChatPanelProps {
   isChatOpen: boolean;
-  setIsChatOpen: (isOpen: boolean) => void;
-};
+  setIsChatOpen: Dispatch<SetStateAction<boolean>>;
+}
 
-const suggestions = [
-  "What exactly is a deepfake?",
-  "How can I spot manipulated media?",
-  "What tools can I use to verify images?"
-];
-
+// 2. APPLY THE INTERFACE TO THE COMPONENT
 export default function ChatPanel({ isChatOpen, setIsChatOpen }: ChatPanelProps) {
-  const { messages, input, setInput, isLoading, sendMessage, clearChat } = useChat();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Sync with the custom event (so "Try Prototype" buttons still work)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const handleOpen = () => setIsChatOpen(true);
+    window.addEventListener('open-chatbot', handleOpen);
+    return () => window.removeEventListener('open-chatbot', handleOpen);
+  }, [setIsChatOpen]);
 
+  // Auto-scroll logic
   useEffect(() => {
-    if (isChatOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [isChatOpen]);
+  }, [messages, isLoading]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = { role: 'user' as const, content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...messages, userMessage] }),
+      });
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setMessages((prev) => [...prev, data]);
+    } catch (err) {
+      setMessages((prev) => [...prev, { role: 'assistant', content: '⚠️ Connection error. Check console.' }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
+      {/* Floating Toggle Button */}
+      <button
+        onClick={() => setIsChatOpen(!isChatOpen)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-[#00C2CB] text-[#0D1B2A] rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[100]"
+      >
+        {isChatOpen ? <X size={24} /> : <MessageSquare size={24} />}
+      </button>
+
+      {/* Chat Window */}
       {isChatOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 transition-opacity"
-          onClick={() => setIsChatOpen(false)}
-        />
-      )}
-
-      <div className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-2xl z-50 flex flex-col transform transition-transform duration-300 ease-in-out border-l border-slate-200 ${
-        isChatOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        
-        <div className="bg-white p-4 flex items-center justify-between border-b border-slate-100 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <h2 className="font-bold text-slate-800">TruthLens Guide</h2>
-          </div>
-          <div className="flex items-center gap-1">
-            {messages.length > 0 && (
-              <button onClick={clearChat} className="text-xs text-slate-400 hover:text-slate-600 px-2 py-1 rounded-md hover:bg-slate-100 transition-colors">
-                Clear
-              </button>
-            )}
-            <button onClick={() => setIsChatOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-slate-50/50">
-          {messages.length === 0 ? (
-            <div className="flex flex-col h-full justify-center px-2 pb-10">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-sm border border-blue-200">
-                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-              </div>
-              <h3 className="text-lg font-bold text-slate-800 mb-2">How can I help?</h3>
-              <p className="text-sm text-slate-500 mb-6">I'm your AI guide for this module. Ask me questions about the material or how to verify information online.</p>
-              
-              <div className="space-y-2 w-full">
-                {suggestions.map((s) => (
-                  <button key={s} onClick={() => { setInput(s); sendMessage(undefined, s); }} className="w-full text-left text-sm px-4 py-3 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50 text-slate-700 shadow-sm transition-all">
-                    {s}
-                  </button>
-                ))}
-              </div>
+        <div className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-[#0D1B2A] border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100] animate-in fade-in slide-in-from-bottom-4">
+          <div className="p-5 border-b border-slate-800 bg-slate-900/50 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#00C2CB]/20 flex items-center justify-center text-[#00C2CB]">
+              <Bot size={20} />
             </div>
-          ) : (
-            messages.map((msg, index) => (
-              <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap leading-relaxed ${
-                    msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-none shadow-sm' : 'bg-white text-slate-800 rounded-bl-none shadow-sm border border-slate-100'
-                  }`}
-                >
-                  {msg.content}
+            <div>
+              <h3 className="font-bold text-white text-sm">TruthLens Assistant</h3>
+              <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">RAG Educational Prototype</p>
+            </div>
+          </div>
+
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4 [scrollbar-width:none]">
+            {messages.length === 0 && (
+              <div className="text-center mt-10">
+                <p className="text-slate-500 text-xs italic">Ask about deepfakes or "The Liar's Dividend."</p>
+              </div>
+            )}
+            {messages.map((m, i) => (
+              <div key={i} className={cn("flex w-full", m.role === 'user' ? "justify-end" : "justify-start")}>
+                <div className={cn(
+                  "max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed",
+                  m.role === 'user' ? "bg-[#00C2CB] text-[#0D1B2A] font-medium rounded-tr-none" : "bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700"
+                )}>
+                  {m.content}
                 </div>
               </div>
-            ))
-          )}
-          
-          {isLoading && messages[messages.length - 1]?.role === 'user' && (
-             <div className="flex justify-start">
-               <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-white text-slate-500 rounded-bl-none shadow-sm border border-slate-100 flex items-center gap-1.5 h-11">
-                 <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                 <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                 <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-               </div>
-             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-slate-700">
+                  <Loader2 size={16} className="text-[#00C2CB] animate-spin" />
+                </div>
+              </div>
+            )}
+          </div>
 
-        <div className="p-4 bg-white border-t border-slate-100 flex-shrink-0">
-          <form onSubmit={sendMessage} className="flex gap-2 relative">
-            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask a question..." className="flex-1 pl-4 pr-12 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-sm text-slate-900 bg-slate-50 transition-all shadow-sm" disabled={isLoading} />
-            <button type="submit" disabled={isLoading || !input.trim()} className="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
-              <svg className="w-4 h-4 translate-x-[1px] translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+          <form onSubmit={handleSubmit} className="p-4 bg-slate-900/50 border-t border-slate-800 flex gap-2">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your query..."
+              className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#00C2CB]"
+            />
+            <button type="submit" disabled={isLoading} className="w-10 h-10 bg-[#00C2CB] rounded-xl flex items-center justify-center text-[#0D1B2A] hover:bg-[#00a8b0] disabled:opacity-50">
+              <Send size={18} />
             </button>
           </form>
-          <div className="text-center mt-3">
-            <span className="text-[10px] text-slate-400 font-medium tracking-wide uppercase">AI can make mistakes. Verify important info.</span>
-          </div>
         </div>
-
-      </div>
+      )}
     </>
   );
 }
