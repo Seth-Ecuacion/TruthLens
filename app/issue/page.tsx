@@ -1,143 +1,108 @@
 'use client';
 
-import FadeIn from '@/components/FadeIn';
-import { BookOpen, CheckCircle2, FileText } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, Mic, FileWarning, ArrowRight, ShieldAlert } from 'lucide-react';
 
-export default function ConclusionPage() {
-  const openChatbot = () => window.dispatchEvent(new CustomEvent('open-chatbot'));
+export default function IssuePage() {
+  // Triggers the global chatbot event we set up in the Navbar
+  const handleOpenChat = () => {
+    window.dispatchEvent(new CustomEvent('open-chatbot'));
+  };
 
   return (
-    <div className="bg-slate-50 pb-32 min-h-screen">
-      
-      {/* HERO SECTION */}
-      <section className="bg-[#0D1B2A] text-white pt-32 pb-32 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <FadeIn>
-            <span className="inline-flex items-center gap-2 text-[#00C2CB] font-bold tracking-widest uppercase text-xs mb-6">
-              <BookOpen size={16} /> Synthesis
-            </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-8 leading-[1.1] text-balance">
-              Restoring the Lens of Truth
-            </h1>
-            <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-sans">
-              AI-generated deception is inevitable, but algorithmic fatalism is not.
-            </p>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* SYNTHESIS PROSE */}
-      <section className="max-w-3xl mx-auto px-6 mt-24">
-        <FadeIn>
-          <p className="text-2xl text-slate-700 font-light leading-relaxed mb-12 text-center text-balance">
-            We cannot code our way out of a trust deficit. The solution to synthetic media is not merely synthetic detection, but pedagogical empowerment.
-          </p>
-        </FadeIn>
+    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
+      {/* Hero Section */}
+      <section className="bg-[#0D1B2A] text-white pt-20 pb-16 px-4 relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00C2CB] rounded-full mix-blend-screen filter blur-[150px] opacity-20 animate-pulse"></div>
         
-        <FadeIn delay={0.1}>
-          <div className="space-y-8 text-slate-600 text-lg leading-relaxed">
-            <p>
-              The TruthLens prototype demonstrates that Retrieval-Augmented Generation can be responsibly deployed as a localized, highly-constrained educational tool. By refusing to ingest the open web and strictly curating its knowledge base with verified journalistic outputs from VERA Files and Rappler, the chatbot significantly mitigates the hallucination issues inherent in foundational models.
-            </p>
-            <p>
-              Most importantly, TruthLens refuses to automate critical thinking. It doesn't tell a Filipino voter, "This video is fake." Instead, it says, "Here is how to check if a video like this is fake, and here is what journalists have found regarding this claim."
-            </p>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="flex items-center gap-3 text-[#00C2CB] font-bold tracking-widest text-sm uppercase mb-6">
+            <ShieldAlert size={20} />
+            The Information Crisis
           </div>
-        </FadeIn>
-      </section>
-
-      {/* PROJECT TAKEAWAYS GRID */}
-      <section className="max-w-7xl mx-auto px-6 mt-32">
-        <FadeIn delay={0.2} className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif text-[#0D1B2A] font-bold">Project Takeaways</h2>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              title: "Defensive RAG",
-              desc: "Using AI to retrieve human fact-checks scales journalistic impact without replacing the journalist."
-            },
-            {
-              title: "Friction as a Feature",
-              desc: "Text-only interfaces force users to articulate queries, reducing the automation bias seen in 'one-click' detectors."
-            },
-            {
-              title: "Localization is Key",
-              desc: "Global models fail to understand Taglish nuances or local political context. Curated databases solve this."
-            },
-            {
-              title: "Rejecting the Liar's Dividend",
-              desc: "The platform emphasizes rebuilding trust in institutions rather than amplifying digital paranoia."
-            }
-          ].map((item, i) => (
-            <FadeIn key={i} delay={0.2 + (i * 0.05)} className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-              <div className="w-10 h-10 rounded-full bg-[#00C2CB]/10 flex items-center justify-center text-[#00C2CB] mb-6">
-                <CheckCircle2 size={20} />
-              </div>
-              <h3 className="font-bold text-[#0D1B2A] mb-3">{item.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
-            </FadeIn>
-          ))}
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+            The weaponization of <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C2CB] to-blue-400">
+              artificial intelligence.
+            </span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed">
+            The Philippine digital landscape is facing an unprecedented crisis. The boundaries between authentic news and fabricated content are blurring, driven by organized disinformation architectures and the rapid evolution of deepfake technology.
+          </p>
         </div>
       </section>
 
-      {/* REFERENCES & CTA SECTION */}
-      <section className="max-w-6xl mx-auto px-6 mt-32">
-        <FadeIn delay={0.3}>
-          <div className="bg-white rounded-[40px] p-8 md:p-12 border border-slate-100 shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-20 items-center">
-            
-            {/* Left: References */}
-            <div className="md:col-span-1 lg:col-span-3">
-              <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-100">
-                <FileText size={24} className="text-[#0D1B2A]" />
-                <h3 className="text-2xl font-serif font-bold text-[#0D1B2A]">Academic & Journalistic References</h3>
-              </div>
+      {/* Main Content Areas */}
+      <section className="max-w-4xl mx-auto px-4 mt-12 space-y-16">
 
-              <ul className="space-y-8">
-                <li className="relative pl-6">
-                  <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-[#00C2CB]"></span>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">VERA Files • 2024</p>
-                  {/* FIX: Verified VERA Files Reference */}
-                  <p className="text-[#0D1B2A] font-medium leading-relaxed">FACT CHECK: TV Patrol report about Ramon Ang, Elon Musk investment project is a DEEPFAKE</p>
-                </li>
-                <li className="relative pl-6">
-                  <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-[#00C2CB]"></span>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Rappler • 2024</p>
-                  {/* FIX: Verified Rappler Reference */}
-                  <p className="text-[#0D1B2A] font-medium leading-relaxed">Philippines faces rising AI-driven disinformation</p>
-                </li>
-                <li className="relative pl-6">
-                  <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-[#00C2CB]"></span>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Citron, D. & Chesney, R. • 2019</p>
-                  <p className="text-[#0D1B2A] font-medium leading-relaxed">Deep Fakes: A Looming Challenge for Privacy, Democracy, and National Security</p>
-                </li>
-              </ul>
-            </div>
-
-            {/* Right: CTA Card */}
-            <div className="md:col-span-1 lg:col-span-2">
-              <div className="bg-slate-50 rounded-3xl p-10 text-center border border-slate-100">
-                <div className="w-16 h-16 bg-[#0D1B2A] rounded-full flex items-center justify-center text-white font-serif font-bold text-2xl mx-auto mb-6 shadow-md">
-                  T
-                </div>
-                <h4 className="text-xl font-serif font-bold text-[#0D1B2A] mb-4">Join the Effort</h4>
-                <p className="text-sm text-slate-500 mb-8 leading-relaxed">
-                  TruthLens is an academic research prototype. Help us expand the knowledge base to combat localized misinformation.
-                </p>
-                <button 
-                  onClick={openChatbot}
-                  className="bg-[#0D1B2A] hover:bg-slate-800 text-white font-bold px-8 py-3.5 rounded-xl w-full transition-transform hover:-translate-y-0.5 shadow-lg text-sm"
-                >
-                  Test the Prototype
-                </button>
-              </div>
-            </div>
-
+        {/* Pillar 1: Troll Farms */}
+        <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-200">
+          <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-700 mb-6">
+            <BrainCircuit size={28} />
           </div>
-        </FadeIn>
-      </section>
+          <h2 className="text-2xl font-bold text-[#0D1B2A] mb-4">The Architects of Networked Disinformation</h2>
+          <p className="text-slate-600 leading-relaxed mb-6">
+            Misinformation in the Philippines is rarely accidental. As detailed by researchers Ong and Cabañes, the country relies on highly professionalized, tiered "troll farms." These networks are run by elite PR strategists who employ anonymous digital influencers and low-level click-farm operators to create artificial "illusions of engagement" and drown out legitimate discourse.
+          </p>
+        </div>
 
+        {/* Pillar 2: The Deepfake Threat (Verified Cases) */}
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-[#0D1B2A] rounded-3xl p-8 shadow-lg text-white border border-slate-800">
+            <div className="w-12 h-12 bg-[#00C2CB]/20 rounded-xl flex items-center justify-center text-[#00C2CB] mb-6">
+              <Mic size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-3">The Ramon Ang Audio Scam</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              In 2024, a sophisticated deepfake circulated online featuring a manipulated audio clip of business tycoon Ramon Ang and Elon Musk promoting a cryptocurrency scam. It was stitched onto legitimate TV Patrol footage, demonstrating how bad actors hijack trusted news formats to deceive the public.
+            </p>
+            <span className="text-xs text-slate-500 mt-4 block uppercase tracking-wider font-bold">— Verified by VERA Files</span>
+          </div>
+
+          <div className="bg-[#0D1B2A] rounded-3xl p-8 shadow-lg text-white border border-slate-800">
+            <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-red-400 mb-6">
+              <FileWarning size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-3">The Ruth Cabal Case</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Real journalists are increasingly becoming targets. AI tools were used to clone the voice and likeness of prominent broadcast journalist Ruth Cabal. This evolution in digital forgery poses a severe threat to the integrity of the upcoming 2025 elections by eroding trust in the press.
+            </p>
+            <span className="text-xs text-slate-500 mt-4 block uppercase tracking-wider font-bold">— Documented by Rappler</span>
+          </div>
+        </div>
+
+        {/* Pillar 3: The Liar's Dividend */}
+        <div className="bg-slate-100 rounded-3xl p-8 md:p-10 border border-slate-200">
+          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#0D1B2A] mb-6 shadow-sm">
+            <AlertTriangle size={28} />
+          </div>
+          <h2 className="text-2xl font-bold text-[#0D1B2A] mb-4">The "Liar's Dividend"</h2>
+          <p className="text-slate-600 leading-relaxed mb-6">
+            Perhaps the most dangerous threat of deepfakes isn't the fake videos themselves, but what academics Citron & Chesney call the <strong>"Liar's Dividend."</strong> As the public becomes more aware that video and audio can be convincingly faked, guilty politicians and bad actors will exploit this skepticism. They will attempt to escape accountability by denouncing authentic, real video evidence of their wrongdoings as "just another deepfake."
+          </p>
+          <div className="bg-white p-5 rounded-xl border-l-4 border-[#00C2CB] shadow-sm">
+            <p className="text-sm font-medium text-slate-700 italic">
+              "A skeptical public will be primed to doubt the authenticity of real audio and video evidence. This skepticism can be invoked just as well against authentic as against adulterated content."
+            </p>
+          </div>
+        </div>
+
+        {/* Call to Action connecting to the RAG Prototype */}
+        <div className="text-center pt-8 pb-12">
+          <h2 className="text-3xl font-bold text-[#0D1B2A] mb-4">Don't just read about it. Test it.</h2>
+          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
+            We built TruthLens to help users navigate this complex landscape. Ask our AI pedagogical tool about any of the cases mentioned above.
+          </p>
+          <button 
+            onClick={handleOpenChat}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#00C2CB] hover:bg-[#00a8b0] text-[#0D1B2A] font-bold rounded-full transition-transform hover:scale-105 shadow-xl"
+          >
+            Launch TruthLens AI
+            <ArrowRight size={20} />
+          </button>
+        </div>
+
+      </section>
     </div>
   );
 }
