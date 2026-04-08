@@ -45,10 +45,10 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.3} className="flex flex-wrap items-center gap-4">
-            <Link href="/issue" className="bg-white hover:bg-slate-100 text-[#0D1B2A] font-bold px-8 py-4 rounded-lg flex items-center gap-2 transition-colors text-sm">
+            <Link href="/issue" className="bg-white hover:bg-slate-100 text-[#0D1B2A] font-bold px-8 py-4 rounded-lg flex items-center gap-2 transition-colors text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5">
               Explore The Issue <ArrowRight size={16} />
             </Link>
-            <button onClick={openChatbot} className="border border-[#00C2CB] bg-transparent text-white hover:bg-[#00C2CB]/10 font-bold px-8 py-4 rounded-lg flex items-center gap-2 transition-colors text-sm">
+            <button onClick={openChatbot} className="border border-[#00C2CB] bg-transparent text-white hover:bg-[#00C2CB]/10 font-bold px-8 py-4 rounded-lg flex items-center gap-2 transition-all text-sm shadow-lg hover:-translate-y-0.5">
               <Bot size={18} className="text-white" /> Try the AI Prototype
             </button>
           </FadeIn>
@@ -60,40 +60,47 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
             
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start group">
               <div className="font-serif text-[#0D1B2A] mb-2 flex items-baseline">
-                {/* Wrapped the number with AnimatedCounter */}
                 <span className="text-7xl md:text-8xl font-bold tracking-tighter"><AnimatedCounter target={86} /></span>
                 <span className="text-4xl md:text-5xl font-sans text-[#00C2CB] font-bold ml-1">%</span>
               </div>
-              <div className="h-1 w-16 bg-[#00C2CB] mb-6"></div>
-              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[220px]">
-                Of adult Filipinos consider fake news a severe problem (Pulse Asia, 2022).
+              <div className="h-1 w-16 bg-[#00C2CB] mb-6 transition-all duration-300 group-hover:w-full"></div>
+              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[250px] mb-4">
+                Of adult Filipinos consider fake news a severe problem.
               </p>
+              <div className="inline-block px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200">
+                Source: Pulse Asia (2022)
+              </div>
             </div>
 
-            <div className="flex flex-col items-start">
+            {/* FIXED: 51% Stat Source updated to SWS / Rappler */}
+            <div className="flex flex-col items-start group">
               <div className="font-serif text-[#0D1B2A] mb-2 flex items-baseline">
-                {/* Wrapped the number with AnimatedCounter */}
                 <span className="text-7xl md:text-8xl font-bold tracking-tighter"><AnimatedCounter target={51} /></span>
                 <span className="text-4xl md:text-5xl font-sans text-[#00C2CB] font-bold ml-1">%</span>
               </div>
-              <div className="h-1 w-16 bg-[#00C2CB] mb-6"></div>
-              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[220px]">
+              <div className="h-1 w-16 bg-[#00C2CB] mb-6 transition-all duration-300 group-hover:w-full"></div>
+              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[250px] mb-4">
                 Admit it is difficult to spot fake news on television, radio, or social media.
               </p>
+              <div className="inline-block px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200">
+                Source: SWS / Rappler
+              </div>
             </div>
 
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start group">
               <div className="font-serif text-[#0D1B2A] mb-2 flex items-baseline">
-                {/* Wrapped the number with AnimatedCounter */}
                 <span className="text-7xl md:text-8xl font-bold tracking-tighter"><AnimatedCounter target={90} /></span>
                 <span className="text-4xl md:text-5xl font-sans text-[#00C2CB] font-bold ml-1">%</span>
               </div>
-              <div className="h-1 w-16 bg-[#00C2CB] mb-6"></div>
-              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[220px]">
+              <div className="h-1 w-16 bg-[#00C2CB] mb-6 transition-all duration-300 group-hover:w-full"></div>
+              <p className="text-slate-600 font-sans text-sm md:text-base leading-relaxed max-w-[250px] mb-4">
                 Report reading or watching fake political news online during the election cycle.
               </p>
+              <div className="inline-block px-2 py-1 bg-slate-100 rounded text-[10px] font-bold text-slate-500 uppercase tracking-widest border border-slate-200">
+                Source: Pulse Asia (2022)
+              </div>
             </div>
 
           </div>
@@ -108,38 +115,41 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-serif text-[#0D1B2A] font-bold mb-6 leading-tight">
               An Educational Case Study <br className="hidden md:block" /> in AI Trust
             </h2>
+            
+            {/* FIXED: Adamopoulou citation perfectly aligned to what the paper actually covers */}
             <p className="text-slate-600 text-lg mb-10 leading-relaxed font-sans max-w-lg">
-              TruthLens is a conceptual prototype demonstrating how Retrieval-Augmented Generation (RAG) can be used defensively to educate users against synthetic media. It is not an automated fact-checker, but a guided pedagogical tool.
+              TruthLens is a conceptual prototype demonstrating how Retrieval-Augmented Generation (RAG) can be used defensively to educate users against synthetic media. Built on established conversational AI frameworks across information retrieval domains <span className="font-bold text-[#0D1B2A]">(Adamopoulou & Moussiades, 2020)</span>, it serves as a guided pedagogical tool rather than an automated fact-checker.
             </p>
             
             <div className="space-y-4">
-              <div className="flex items-center gap-5 p-6 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group">
-                <div className="w-10 h-10 shrink-0 rounded-full bg-[#00C2CB]/10 flex items-center justify-center text-[#00C2CB] group-hover:bg-[#00C2CB] group-hover:text-white transition-colors">
+              <div className="flex items-start gap-5 p-6 rounded-2xl border border-[#00C2CB]/30 bg-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group relative overflow-hidden">
+                <div className="absolute left-0 top-0 w-1 h-full bg-[#00C2CB]"></div>
+                <div className="w-10 h-10 shrink-0 rounded-full bg-[#0D1B2A] flex items-center justify-center text-white transition-colors">
                   <ShieldCheck size={20} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-[#0D1B2A] mb-1">Defensive Design</h4>
-                  <p className="text-sm text-slate-500">Built with guardrails to prevent hallucination.</p>
+                  <h4 className="font-bold text-[#0D1B2A] mb-1">Defensive Design (ACM Code of Ethics)</h4>
+                  <p className="text-sm text-slate-500 leading-relaxed">Built with strict guardrails to prevent AI hallucination, adhering directly to the ACM principle of "Avoiding Harm."</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 p-6 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group">
+              <div className="flex items-start gap-5 p-6 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group">
                 <div className="w-10 h-10 shrink-0 rounded-full bg-[#00C2CB]/10 flex items-center justify-center text-[#00C2CB] group-hover:bg-[#00C2CB] group-hover:text-white transition-colors">
                   <FileText size={20} />
                 </div>
                 <div>
                   <h4 className="font-bold text-[#0D1B2A] mb-1">Editorial Context</h4>
-                  <p className="text-sm text-slate-500">Grounded in investigative journalism principles.</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">Grounded in investigative journalism principles, translating complex reports into conversational guidance.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 p-6 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group">
+              <div className="flex items-start gap-5 p-6 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default group">
                 <div className="w-10 h-10 shrink-0 rounded-full bg-[#00C2CB]/10 flex items-center justify-center text-[#00C2CB] group-hover:bg-[#00C2CB] group-hover:text-white transition-colors">
                   <Database size={20} />
                 </div>
                 <div>
                   <h4 className="font-bold text-[#0D1B2A] mb-1">RAG Architecture</h4>
-                  <p className="text-sm text-slate-500">Powered by curated, verified knowledge bases.</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">Powered exclusively by curated, verified knowledge bases like VERA Files and academic literature.</p>
                 </div>
               </div>
             </div>
