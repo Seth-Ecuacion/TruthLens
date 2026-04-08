@@ -228,4 +228,4 @@ This project was developed as an academic capstone prototype. The codebase is op
 
 ---
 
-*Built for the Filipino Digital Citizen — North Eastern Mindanao State University, 2025.*
+*Built for the Filipino Digital Citizen — North Eastern Mindanao State University, 2026.*
