@@ -17,7 +17,7 @@ type DocumentChunk = {
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // Acknowledged: Admin key for prototype only
+  process.env.SUPABASE_SERVICE_ROLE_KEY! 
 );
 
 const cohere = new CohereClient({
@@ -28,43 +28,72 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY!,
 });
 
+// ==========================================
+// 🛡️ IN-MEMORY RATE LIMITER SETUP
+// ==========================================
+const rateLimitMap = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW = 10000; // 10 seconds
+const MAX_REQUESTS = 3; // Max 3 requests per 10 seconds
+
 export async function POST(req: Request) {
   try {
+    // 1. RATE LIMITING GUARD
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous_ip';
+    const now = Date.now();
+    
+    // Get the user's recent request timestamps
+    const userRequests = rateLimitMap.get(ip) || [];
+    
+    // Filter out requests that are older than our 10-second window
+    const recentRequests = userRequests.filter((time) => now - time < RATE_LIMIT_WINDOW);
+
+    if (recentRequests.length >= MAX_REQUESTS) {
+      console.warn(`🛑 Rate limit hit for IP: ${ip}`);
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a few seconds before asking another question.' }, 
+        { status: 429 } // HTTP 429: Too Many Requests
+      );
+    }
+
+    // Add the current request timestamp to their history
+    recentRequests.push(now);
+    rateLimitMap.set(ip, recentRequests);
+    // ==========================================
+
     const { messages } = await req.json();
 
-    // 1. INPUT VALIDATION GUARD
+    // 2. INPUT VALIDATION GUARD
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'Invalid request payload' }, { status: 400 });
     }
 
     const lastMessage = messages[messages.length - 1].content;
 
-    // 2. EMBED QUERY (inputType: 'search_query' is correct for Cohere v3)
+    // 3. EMBED QUERY
     const embed = await cohere.embed({
       texts: [lastMessage],
       model: 'embed-english-v3.0',
       inputType: 'search_query', 
     });
 
-    // Cast 'embed.embeddings' so TypeScript knows it's a list of number arrays
     const embeddings = embed.embeddings as number[][];
     const queryEmbedding = embeddings[0];
 
-    // 3. VECTOR SEARCH 
+    // 4. VECTOR SEARCH 
     const { data: documents, error: matchError } = await supabase.rpc('match_documents', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.3, // Lowered to 0.3 for better conversational matching
+      match_threshold: 0.3,
       match_count: 5,
     }) as { data: DocumentChunk[] | null, error: any };
 
     if (matchError) throw matchError;
 
-    // 4. FORMAT CONTEXT WITH METADATA (Safe even if documents is null/empty)
+    // 5. FORMAT CONTEXT
     const contextText = documents && documents.length > 0
       ? documents.map((doc) => `[SOURCE: ${doc.metadata.source} (${doc.metadata.date})]\n${doc.content}`).join('\n\n---\n\n')
       : "No relevant verified context found in the database.";
 
-    // 5. SYSTEM PROMPT (Updated with Triangulation & Neutrality Defense)
+    // 6. SYSTEM PROMPT
     const systemPrompt = `
     You are TruthLens AI, a defensive pedagogical tool designed to combat Philippine misinformation.
 
@@ -85,11 +114,11 @@ export async function POST(req: Request) {
     ${contextText}
     `;
 
-    // 6. GROQ INFERENCE (Temperature 0.1 for maximum groundedness)
+    // 7. GROQ INFERENCE
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: lastMessage } // Stateless RAG pattern
+        { role: 'user', content: lastMessage }
       ],
       model: 'llama-3.3-70b-versatile',
       temperature: 0.1, 
@@ -97,7 +126,7 @@ export async function POST(req: Request) {
       stream: true,
     });
 
-    // 7. CONVERT TO WEB STREAM
+    // 8. CONVERT TO WEB STREAM
     const stream = new ReadableStream({
       async start(controller) {
         for await (const chunk of chatCompletion) {
@@ -110,7 +139,6 @@ export async function POST(req: Request) {
       }
     });
 
-    // Return the stream directly to the frontend
     return new Response(stream, {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }
     });
