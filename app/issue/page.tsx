@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, BrainCircuit, Mic, FileWarning, ArrowRight, ShieldAlert, BookOpen } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, Mic, FileWarning, ArrowRight, ShieldAlert, BookOpen, MonitorPlay } from 'lucide-react';
 
 export default function IssuePage() {
   // Triggers the global chatbot event we set up in the Navbar
@@ -33,7 +33,7 @@ export default function IssuePage() {
       </section>
 
       {/* Main Content Areas */}
-      <section className="max-w-4xl mx-auto px-4 mt-12 space-y-16">
+      <section className="max-w-5xl mx-auto px-4 mt-12 space-y-16">
 
         {/* Pillar 1: Troll Farms */}
         <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
@@ -46,29 +46,39 @@ export default function IssuePage() {
           </p>
         </div>
 
-        {/* Pillar 2: The Deepfake Threat (Verified Cases) */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-[#0D1B2A] rounded-3xl p-8 shadow-lg text-white border border-slate-800 hover:border-[#00C2CB]/50 transition-colors">
-            <div className="w-12 h-12 bg-[#00C2CB]/20 rounded-xl flex items-center justify-center text-[#00C2CB] mb-6">
+        {/* Pillar 2: The Deepfake Threat (Triangulated 3 Columns) */}
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="bg-[#0D1B2A] rounded-3xl p-6 shadow-lg text-white border border-slate-800 hover:border-[#00C2CB]/50 transition-colors flex flex-col">
+            <div className="w-12 h-12 bg-[#00C2CB]/20 rounded-xl flex items-center justify-center text-[#00C2CB] mb-5">
               <Mic size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3">The Ramon Ang Audio Scam</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              In 2024, a sophisticated deepfake circulated online featuring a manipulated audio clip of business tycoon Ramon Ang and Elon Musk promoting a cryptocurrency scam. It was stitched onto legitimate TV Patrol footage, demonstrating how bad actors hijack trusted news formats to deceive the public.
+            <h3 className="text-lg font-bold mb-3">The Ramon Ang Audio Scam</h3>
+            <p className="text-slate-400 text-sm leading-relaxed flex-grow">
+              In 2024, a sophisticated deepfake circulated online featuring a manipulated audio clip of business tycoon Ramon Ang promoting a cryptocurrency scam, stitched onto legitimate TV Patrol footage.
             </p>
-            <span className="text-xs text-[#00C2CB] mt-4 block uppercase tracking-wider font-bold">— Verified by VERA Files (2024)</span>
+            <span className="text-[10px] text-[#00C2CB] mt-4 block uppercase tracking-wider font-bold">— Verified by VERA Files (2024)</span>
           </div>
 
-          <div className="bg-[#0D1B2A] rounded-3xl p-8 shadow-lg text-white border border-slate-800 hover:border-red-400/50 transition-colors">
-            <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-red-400 mb-6">
+          <div className="bg-[#0D1B2A] rounded-3xl p-6 shadow-lg text-white border border-slate-800 hover:border-red-400/50 transition-colors flex flex-col">
+            <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-red-400 mb-5">
               <FileWarning size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3">The Ruth Cabal Case</h3>
-            {/* FIXED: Corrected tense for the 2025 elections to be historically accurate for a 2026 presentation */}
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Real journalists are increasingly becoming targets. AI tools were used to clone the voice and likeness of prominent broadcast journalist Ruth Cabal. This evolution in digital forgery posed a severe threat to the integrity of the 2025 elections by eroding trust in the press.
+            <h3 className="text-lg font-bold mb-3">The Ruth Cabal Case</h3>
+            <p className="text-slate-400 text-sm leading-relaxed flex-grow">
+              Real journalists are increasingly becoming targets. AI tools were used to clone the voice and likeness of prominent broadcast journalist Ruth Cabal, posing a severe threat to the integrity of the 2025 elections.
             </p>
-            <span className="text-xs text-red-400 mt-4 block uppercase tracking-wider font-bold">— Documented by Rappler (2024)</span>
+            <span className="text-[10px] text-red-400 mt-4 block uppercase tracking-wider font-bold">— Documented by Rappler (2024)</span>
+          </div>
+
+          <div className="bg-[#0D1B2A] rounded-3xl p-6 shadow-lg text-white border border-slate-800 hover:border-blue-400/50 transition-colors flex flex-col">
+            <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mb-5">
+              <MonitorPlay size={24} />
+            </div>
+            <h3 className="text-lg font-bold mb-3">GMA Anchors Targeted</h3>
+            <p className="text-slate-400 text-sm leading-relaxed flex-grow">
+              Bad actors utilized AI voice-cloning technology to manipulate the likeness of veteran journalists Ivan Mayrina and Susan Enriquez, fabricating news broadcasts to promote a fake necklace distribution scam.
+            </p>
+            <span className="text-[10px] text-blue-400 mt-4 block uppercase tracking-wider font-bold">— Documented by GMA News</span>
           </div>
         </div>
 
@@ -82,7 +92,6 @@ export default function IssuePage() {
             Perhaps the most dangerous threat of deepfakes isn't the fake videos themselves, but what academics Citron & Chesney call the <strong>"Liar's Dividend."</strong> As the public becomes more aware that video and audio can be convincingly faked, guilty politicians and bad actors will exploit this skepticism. They will attempt to escape accountability by denouncing authentic, real video evidence of their wrongdoings as "just another deepfake."
           </p>
           <div className="bg-white p-6 rounded-xl border-l-4 border-[#00C2CB] shadow-sm">
-            {/* FIXED: Updated citation to use the safe page range (pp. 1771-1786) */}
             <p className="text-sm font-medium text-slate-700 italic leading-relaxed">
               "A skeptical public will be primed to doubt the authenticity of real audio and video evidence. This skepticism can be invoked just as well against authentic as against adulterated content" <span className="font-bold not-italic text-[#0D1B2A]">(Citron & Chesney, 2019, pp. 1771-1786).</span>
             </p>
@@ -104,7 +113,7 @@ export default function IssuePage() {
           </button>
         </div>
 
-        {/* Formal Academic References Section */}
+        {/* Formal Academic References Section (Expanded with Triangulation) */}
         <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 mt-12 shadow-sm">
           <div className="flex items-center gap-3 text-[#0D1B2A] font-bold mb-6">
             <BookOpen size={24} className="text-[#00C2CB]" />
@@ -115,15 +124,20 @@ export default function IssuePage() {
               <strong>Citron, D. K., & Chesney, R. (2019).</strong> Deep Fakes: A Looming Challenge for Privacy, Democracy, and National Security. <em>California Law Review, 107</em>(6), 1753-1820.
             </li>
             <li>
+              <strong>GMA News Online. (2024).</strong> Voices of GMA anchors faked in videos offering 'free' necklaces. <em>GMA Integrated News</em>.
+            </li>
+            <li>
+              <strong>Gonzales, P., & Chua, Y. T. (2025).</strong> AI fakery rises, but cheapfakes still rule the race. <em>Tsek.ph</em>.
+            </li>
+            <li>
               <strong>Ong, J. C., & Cabañes, J. V. A. (2018).</strong> Architects of Networked Disinformation: Behind the Scenes of Troll Accounts and Fake News Production in the Philippines. <em>Newton Tech4Dev Network</em>.
             </li>
             <li>
               <strong>Rappler. (2024).</strong> Philippines faces rising AI-driven disinformation. Retrieved from Rappler Newsbreak.
             </li>
             <li>
-              <strong>VERA Files. (2024).</strong> FACT CHECK: TV Patrol report about Ramon Ang, Elon Musk investment project is a DEEPFAKE. Retrieved from VERA Files Fact Check.
+              <strong>VERA Files. (2024).</strong> FACT CHECK: Video of Jessica Soho promoting a food supplement AI-ALTERED.
             </li>
-            {/* FIXED: Ensured exact spelling of 'Derakhshan' and 'policymaking' as one word */}
             <li>
               <strong>Wardle, C., & Derakhshan, H. (2017).</strong> Information disorder: Toward an interdisciplinary framework for research and policymaking. <em>Council of Europe Report</em>.
             </li>

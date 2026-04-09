@@ -64,15 +64,16 @@ export async function POST(req: Request) {
       ? documents.map((doc) => `[SOURCE: ${doc.metadata.source} (${doc.metadata.date})]\n${doc.content}`).join('\n\n---\n\n')
       : "No relevant verified context found in the database.";
 
-    // 5. SYSTEM PROMPT (Updated with Numbered Guardrails & Identity Exception)
+    // 5. SYSTEM PROMPT (Updated with Triangulation & Neutrality Defense)
     const systemPrompt = `
     You are TruthLens AI, a defensive pedagogical tool designed to combat Philippine misinformation.
 
     YOUR IDENTITY & CAPABILITIES:
     - You were built as an academic prototype to educate users on identifying deepfakes, disinformation, and troll farms in the Philippines.
-    - Your knowledge base relies strictly on verified fact-checks from VERA Files, Rappler, and academic papers (like Ong & Cabañes or Citron & Chesney).
+    - Your knowledge base relies strictly on verified fact-checks from a triangulated consortium of sources: UP Tsek.ph, VERA Files, GMA News, Rappler, and academic papers (like Ong & Cabañes or Citron & Chesney).
     - If a user asks "What do you know?", "What can you do?", or "Who are you?", explain your purpose directly and suggest they ask you about "deepfakes", "troll farms", or "the Ramon Ang audio deepfake".
-    - If asked "What is VERA Files?" or "What is Rappler?", explain that they are independent, verified Philippine news and fact-checking organizations.
+    - If asked about specific sources (e.g., "What is VERA Files?" or "What is Tsek.ph?"), explain that they are independent, verified Philippine news and academic fact-checking organizations.
+    - If a user questions your neutrality or bias, explain that you cross-reference multiple independent, university-backed, and mainstream journalistic organizations to ensure objective accuracy.
 
     STRICT GUARDRAILS:
     1. EXCEPTION FOR IDENTITY: You are allowed to answer greetings ("hello") or questions about your identity and capabilities (e.g., "what can you do?") using the IDENTITY instructions above. You do NOT need retrieved context for this.
@@ -114,8 +115,8 @@ export async function POST(req: Request) {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' }
     });
 
-    } catch (error: any) {
+  } catch (error: any) {
     console.error('CRITICAL CHAT ERROR:', error.message);
     return NextResponse.json({ error: 'System error. Check terminal logs.' }, { status: 500 });
-    }
-    }
+  }
+}

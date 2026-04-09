@@ -92,6 +92,42 @@ const sources = [
     title: 'Architects of Networked Disinformation: Behind the Scenes of Troll Farms in the Philippines',
     source: 'Ong, J. & Cabañes, J.',
     date: '2018'
+  },
+  {
+    type: 'url',
+    url: 'https://tsek.ph/ai-fakery-rises-but-cheapfakes-still-rule-the-race/',
+    title: 'AI fakery rises, but cheapfakes still rule the race',
+    source: 'Tsek.ph',
+    date: '2025',
+    metadata_notes: 'Documents that out of 35 altered claims during the 2025 election campaign, nearly a third involved deepfake technology.'
+  },
+  {
+    type: 'url',
+    url: 'https://www.gmanetwork.com/news/topstories/specialreports/918489/ai-deepfakes-to-figure-more-in-campaign-for-eleksyon-2025-expert/story/',
+    title: 'AI, deepfakes to figure more in campaign for Eleksyon 2025',
+    source: 'GMA News Online',
+    date: '2024'
+  },
+  {
+    type: 'url',
+    url: 'https://www.cambridge.org/core/journals/data-and-policy/article/disinformation-by-design-leveraging-solutions-to-combat-misinformation-in-the-philippines-2025-election/81A1C30509A8F53B4B27DB0B25E12E99',
+    title: 'Disinformation by design: leveraging solutions to combat misinformation in the Philippines’ 2025 election',
+    source: 'Cambridge University Press',
+    date: '2025'
+  },
+  {
+    type: 'text',
+    content: 'COMELEC Resolution No. 11064 establishes the guidelines on the use of Artificial Intelligence (AI) and deepfakes in the 2025 National and Local Elections. It mandates the disclosure of AI-generated materials used in campaign propaganda to prevent voter deception and protect the integrity of the electoral process.',
+    title: 'COMELEC Resolution 11064 - Guidelines on AI use in Elections',
+    source: 'Commission on Elections (COMELEC)',
+    date: '2024'
+  },
+  {
+    type: 'text',
+    content: 'The InVID/WeVerify plugin is a verification tool designed for journalists and fact-checkers. Core methodologies for manual deepfake detection include: 1) Reverse image searching keyframes to find original, unmanipulated source videos. 2) Analyzing file metadata (EXIF) for signs of artificial generation. 3) Forensic analysis of inconsistencies in lighting, shadows, and facial rendering (e.g., unnatural blinking or teeth).',
+    title: 'InVID/WeVerify Detection Methodology',
+    source: 'InVID Project',
+    date: '2024'
   }
 ];
 /**
