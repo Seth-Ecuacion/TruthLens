@@ -88,9 +88,44 @@ const sources = [
   },
   {
     type: 'local',
-    filepath: './data/ong-cabanes-architects.txt', // ADD THIS FILE
-    title: 'Architects of Networked Disinformation: Behind the Scenes of Troll Farms in the Philippines',
-    source: 'Ong, J. & Cabañes, J.',
+    filepath: './data/deepfake-detection.txt', // ADD THIS FILE
+    title: 'Deepfake Detection: A Systematic Literature Review',
+    source: 'IEEE Access, Vol. 10, pp. 25494–25513 (IEEE)',
+    date: '2022'
+  },
+  {
+    type: 'local',
+    filepath: './data/survey-automated-fact-checking.txt', // ADD THIS FILE
+    title: 'A Survey on Automated Fact-Checking',
+    source: 'Transactions of the Association for Computational Linguistics, Vol. 10, pp. 178–206 (MIT Press)',
+    date: '2022'
+  },
+  {
+    type: 'local',
+    filepath: './data/defining-fake-news.txt', // ADD THIS FILE
+    title: 'Defining "Fake News"',
+    source: 'Digital Journalism, Vol. 6, No. 2, pp. 137–153 (Taylor & Francis / Routledge)',
+    date: '2017'
+  },
+  {
+    type: 'local',
+    filepath: './data/deepfakes-and-beyond.txt', // ADD THIS FILE
+    title: 'DeepFakes and Beyond: A Survey of Face Manipulation and Fake Detection',
+    source: 'Tolosana, R., Vera-Rodriguez, R., Fierrez, J., Morales, A., & Ortega-Garcia, J.',
+    date: '2020'
+  },
+  {
+    type: 'local',
+    filepath: './data/deepfakes-and-disinformation.txt', // ADD THIS FILE
+    title: 'Deepfakes and Disinformation: Exploring the Impact of Synthetic Political Video on Deception, Uncertainty, and Trust in News',
+    source: 'Vaccari, C. & Chadwick, A.',
+    date: '2020'
+  },
+  {
+    type: 'local',
+    filepath: './data/truth-and-false-spread.txt', // ADD THIS FILE
+    title: 'The Spread of True and False News Online',
+    source: 'Vosoughi, S., Roy, D., & Aral, S.',
     date: '2018'
   },
   {

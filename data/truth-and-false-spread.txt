@@ -1,0 +1,7 @@
+Title: The Spread of True and False News Online | Source: Vosoughi, S., Roy, D., & Aral, S. | Date: 2018
+
+False news spreads farther, faster, deeper, and more broadly than true news on Twitter, and the primary driver is human behavior, not bots. The study analyzed ~126,000 rumor cascades spread by ~3 million people on Twitter from 2006 to 2017, classifying news as true or false using six independent fact-checking organizations with 95–98% agreement.
+
+Falsehood reached cascade depths 8 hops deeper than truth, took truth 6x longer to reach 1,500 people and 20x longer to reach a depth of 10, and the top 1% of false cascades reached between 1,000–100,000 people while truth rarely exceeded 1,000. False political news was the most severe category, traveling deeper and faster than any other type of false information, accounting for ~45,000 of the ~126,000 total cascades.
+
+False news was measurably more novel than true news, triggering surprise and disgust in replies, while true news inspired sadness, joy, and trust. Users who spread false news actually had fewer followers, were less active, and were verified less often, meaning falsity spread despite these disadvantages. After removing all bot activity, false news still outperformed truth across every metric, with bots accelerating both equally, confirming that human behavior is the core mechanism. Misinformation containment must therefore address human psychology through behavioral interventions like labeling and incentive design, not just bot suppression.
